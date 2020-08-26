@@ -1,3 +1,10 @@
 module.exports = {
-  transpileDependencies: ["vuetify"]
-};
+  transpileDependencies: ['vuetify'],
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '@': 'src',
+      },
+    },
+  },
+}
