@@ -9,7 +9,7 @@
       @keyup.enter="onUpdateData"
       @blur="onUpdateData"
     />
-    <span v-else class="tree-view-item-value" :class="getValueType(data)" v-html="valueFormed" />
+    <span v-else class="tree-view-item-value" :class="getValueType(data)"> {{ valueFormed }} </span>
     <span v-show="error">{{ error }}</span>
   </div>
 </template>
@@ -52,6 +52,10 @@ export default class TreeViewItem extends Vue {
     this.$set(this, 'valueString', isString(val) ? val.replace(/^["]+|["]+$/g, '') : val)
   }
 
+  mounted() {
+    console.log('data', this.data)
+  }
+
   onUpdateData() {
     try {
       const v = this.typedValue(this.valueString)
@@ -77,6 +81,9 @@ export default class TreeViewItem extends Vue {
     }
   }
 
+  /**
+   * Formats the value into legible JSON
+   */
   getValue(value: number | string | null | unknown): number | string | null | unknown {
     if (isNumber(value)) {
       return value
@@ -87,6 +94,7 @@ export default class TreeViewItem extends Vue {
     if (isString(value)) {
       return `"${value}"`
     }
+    console.log('value', value)
     return value
   }
 
