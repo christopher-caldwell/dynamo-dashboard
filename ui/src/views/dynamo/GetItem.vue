@@ -32,9 +32,10 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 
-import client from '../../client'
 import OperationHeader from '@/components/dynamo/OperationHeader.vue'
 import JsonView from '@/components/dynamo/JsonView.vue'
+import client from '../../client'
+import { Json } from '../../type/interfaces'
 
 @Component({
   components: {
@@ -47,7 +48,7 @@ export default class DynamoOperation extends Vue {
   rangeKeyValue = '1010170337'
   inputErrorMessages = []
   isLoading = false
-  jsonOutput = {}
+  jsonOutput: Json = {}
   async sendRequest() {
     try {
       const { data } = (await client.get('/get-item', {
@@ -55,8 +56,7 @@ export default class DynamoOperation extends Vue {
           partitionKeySearchTerm: this.partitionKeyValue,
           rangeKeySearchTerm: this.rangeKeyValue,
         },
-      })) as Record<string, unknown>
-      console.log('res', data)
+      })) as { data: Json }
       this.jsonOutput = data
     } catch (error) {
       console.error('ops', error.response)

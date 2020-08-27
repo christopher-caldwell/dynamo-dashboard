@@ -1,17 +1,24 @@
 <template lang="pug">
-  tree-view(:data="data" :options="{maxDepth: 3}")
+  JsonTreeView(:data='mockData')  
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
+import JsonTreeView from '@/components/json/TreeView.vue'
+import { Json } from '../../type/interfaces'
+import { mockData } from '../../constants'
 
-export default Vue.extend({
+@Component({
   name: 'JsonView',
-  props: {
-    data: {
-      type: Object,
-      required: true,
-    },
+  components: {
+    JsonTreeView,
   },
 })
+export default class JsonView extends Vue {
+  @Prop({ required: true })
+  data!: Json
+
+  mockData = mockData
+}
 </script>
