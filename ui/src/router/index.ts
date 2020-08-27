@@ -9,12 +9,16 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'Home',
     component: Home,
+  },  
+  {
+    path: '/get-item',
+    name: 'DynamoGetItem',
+    component: () => import(/* webpackChunkName: "about" */ '../views/dynamo/GetItem.vue'),
   },
 ]
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
   routes,
 })
 

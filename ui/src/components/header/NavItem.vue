@@ -7,7 +7,7 @@
         v-list-item-title {{route.title}}
   span(v-else)
     v-divider
-    v-subheader {{ route.header }}
+    v-subheader {{ route.title }}
 </template>
 
 <script>

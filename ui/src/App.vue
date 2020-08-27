@@ -2,7 +2,7 @@
   v-app
     Header
     v-main
-      
+      router-view
 </template>
 
 <script lang="ts">

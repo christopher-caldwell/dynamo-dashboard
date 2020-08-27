@@ -15,6 +15,10 @@ const getItem = (partitionSearchTerm: string, rangeSearchTerm: string): Promise<
 
 export default async (req: Request, res: Response): Promise<void> => {
   const { partitionKeySearchTerm, rangeKeySearchTerm } = (req.query as unknown) as DynamoOptions
-  const item = await getItem(partitionKeySearchTerm, rangeKeySearchTerm)
-  res.send(item)
+  try {
+    const item = await getItem(partitionKeySearchTerm, rangeKeySearchTerm)
+    res.send(item)
+  } catch (error) {
+    res.send(error)
+  }
 }

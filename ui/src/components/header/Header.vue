@@ -2,13 +2,12 @@
 div
   v-navigation-drawer(v-model='isDrawerOpen', app, clipped)
     v-list.internal-drawer-container.listing-listy.list(dense)
-      NavMenuItem(v-for='(route, index) in allowableRoutes', :key='index', :route='route')
+      NavMenuItem(v-for='(route, index) in routes', :key='index', :route='route')
     #dark-mode-toggle
       v-switch(
         v-model='isDarkMode',
         @change='saveDarkModeSetting',
         label='Dark Mode',
-        :color='greenColor',
         hide-details
       )
   v-app-bar(app, dense, clipped-left)
@@ -24,7 +23,7 @@ div
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import NavMenuItem from '@/components/header/NavItem.vue'
-import routes, { Route } from '@/'
+import routes, { Route } from '../../router/routes'
 
 interface Data {
   isDrawerOpen: boolean
@@ -40,7 +39,7 @@ export default Vue.extend({
     return {
       isDrawerOpen: false,
       isDarkMode: true,
-      routes
+      routes,
     }
   },
   computed: {
