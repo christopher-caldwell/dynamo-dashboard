@@ -30,7 +30,7 @@ const query = async (
 }
 
 export default async (req: Request, res: Response): Promise<void> => {
-  const queryParams = (req.body as unknown) as DynamoOptions
-  const items = await query(queryParams)
+  const reqQueryParams = (req.query as unknown) as DynamoOptions
+  const items = await query(reqQueryParams)
   res.send(items)
 }

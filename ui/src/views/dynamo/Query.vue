@@ -84,7 +84,7 @@ export default class DynamoOperation extends Vue {
   jsonOutput: Json = {}
   async sendRequest() {
     try {
-      const { data } = (await client.get('/get-item', {
+      const { data } = (await client.get('/query', {
         params: {
           partitionKeySearchTerm: this.partitionKeyValue,
           rangeKeySearchTerm: this.rangeKeyValue,

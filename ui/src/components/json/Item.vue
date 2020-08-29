@@ -2,9 +2,14 @@
   <div class="tree-view-item">
     <div v-if="isObject(data)" class="tree-view-item-leaf">
       <div class="tree-view-item-node" @click.stop="toggleOpen()">
-        <span :class="{ opened: isOpen }" class="tree-view-item-key tree-view-item-key-with-chevron">{{
+        <span
+          :class="{ opened: isOpen }"
+          class="tree-view-item-key tree-view-item-key-with-chevron"
+        >
+          {{
           getKey(data)
-        }}</span>
+          }}
+        </span>
         <span class="tree-view-item-hint">{{ propertyDisplayText }}</span>
       </div>
       <div v-if="!limitRenderDepth || isOpen">
@@ -15,18 +20,21 @@
           v-show="isOpen"
           v-for="child in data.children"
           :data="child"
-          :modifiable="modifiable"
           :showLinkAsClickable="showLinkAsClickable"
           :limit-render-depth="limitRenderDepth"
-          @change-data="onChangeData"
         />
       </div>
     </div>
     <div v-if="isArray(data)" class="tree-view-item-leaf">
       <div class="tree-view-item-node" @click.stop="toggleOpen()">
-        <span :class="{ opened: isOpen }" class="tree-view-item-key tree-view-item-key-with-chevron">{{
+        <span
+          :class="{ opened: isOpen }"
+          class="tree-view-item-key tree-view-item-key-with-chevron"
+        >
+          {{
           getKey(data)
-        }}</span>
+          }}
+        </span>
         <span class="tree-view-item-hint">{{ data.children.length }} {{ itemDisplayText }}</span>
       </div>
       <div v-if="!limitRenderDepth || isOpen">
@@ -37,10 +45,8 @@
           v-show="isOpen"
           v-for="child in data.children"
           :data="child"
-          :modifiable="modifiable"
           :showLinkAsClickable="showLinkAsClickable"
           :limit-render-depth="limitRenderDepth"
-          @change-data="onChangeData"
         />
       </div>
     </div>
@@ -49,9 +55,7 @@
       class="tree-view-item-leaf"
       :key-string="getKey(data)"
       :data="data.value"
-      :modifiable="modifiable"
       :showLinkAsClickable="showLinkAsClickable"
-      @change-data="onChangeData"
     />
   </div>
 </template>
@@ -60,7 +64,7 @@
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import TreeViewValue from './Value.vue'
-import { isNumber, isObject, isArray } from '../../utils/determineTypes'
+import { isNumber } from '../../utils/determineTypes'
 import { ObjectStructure } from '../../type/interfaces'
 import { defaultJsonViewOptions } from '../../constants'
 
@@ -80,26 +84,27 @@ export default class TreeViewItem extends Vue {
   @Prop({ default: 0 })
   currentDepth!: number
 
-  @Prop({ default: defaultJsonViewOptions.modifiable })
-  modifiable!: boolean
-
   @Prop({ required: true })
   showLinkAsClickable!: string
 
   @Prop({ default: defaultJsonViewOptions.limitRenderDepth })
   limitRenderDepth!: number
 
-  isOpen = this.currentDepth < this.maxDepth
+  @Prop({ default: defaultJsonViewOptions.isClosedByDefault })
+  isClosedByDefault!: boolean
+
+  @Prop({ default: false })
+  isRoot!: boolean
+
+  isOpen = !this.isClosedByDefault
 
   // Methods
-  isArray(value) {
-    return isArray(value)
+  isArray(value: ObjectStructure) {
+    return value.children ? true : false
   }
+
   isJsonPrimitive(jsonValue: ObjectStructure): boolean {
-    // not an array, and not an obect, must be primitvie
-    console.log('value', jsonValue)
-    // console.log('determination', !this.isObject(jsonValue) && !this.isArray(jsonValue))
-    console.log('determination', !!jsonValue.children?.length)
+    // if it has any children, it's not a primitive
     return jsonValue.children ? false : true
   }
 
@@ -115,9 +120,8 @@ export default class TreeViewItem extends Vue {
     return isNumber(value.key) ? `${value.key}:` : `"${value.key}":`
   }
 
-  onChangeData(path: any[], value: any) {
-    const newPath = [this.data.key, ...path]
-    this.$emit('change-data', newPath, value)
+  mounted() {
+    if (this.isRoot) this.isOpen = true
   }
 
   // Computed
@@ -145,11 +149,15 @@ export default class TreeViewItem extends Vue {
 }
 </script>
 
-<style scoped>
+<style>
 .tree-view-item {
   font-family: monaco, monospace;
-  font-size: 14px;
+  font-size: 16px;
   margin-left: 18px;
+}
+
+.tree-view-item-value-number {
+  color: red;
 }
 
 .tree-view-item-node {

@@ -9,9 +9,9 @@ export const dynamoOperations = {
 export const defaultJsonViewOptions: JsonViewOptions = {
   maxDepth: 4,
   rootObjectKey: 'root',
-  modifiable: false,
   showLinkAsClickable: false,
   limitRenderDepth: 0,
+  isClosedByDefault: true,
 }
 
 export const mockData = {

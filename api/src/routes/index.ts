@@ -10,7 +10,7 @@ const routeHandler = (app: Express) => {
   app.get('/get-item', (req, res) => {
     return getItem(req, res)
   })
-  app.post('/query', (req, res) => {
+  app.get('/query', (req, res) => {
     return queryItem(req, res)
   })
 }

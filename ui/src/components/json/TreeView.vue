@@ -3,12 +3,13 @@
     <tree-view-item
       class="tree-view-item-root"
       :data="parsedData"
-      :max-depth="options.maxDepth"
-      :current-depth="0"
+      :maxDepth="options.maxDepth"
+      :currentDepth="0"
       :modifiable="options.modifiable"
       :showLinkAsClickable="options.showLinkAsClickable"
-      :limit-render-depth="options.limitRenderDepth"
-      @change-data="onChangeData"
+      :limitRenderDepth="options.limitRenderDepth"
+      :isClosedByDefault="options.isClosedByDefault"
+      :isRoot="true"
     />
   </div>
 </template>
@@ -16,13 +17,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import map from 'lodash.map'
-import drop from 'lodash.drop'
-import dropRight from 'lodash.dropright'
 import TreeViewItem from './Item.vue'
-import { JsonViewOptions, Json, JsonMap, ObjectStructure } from '../../type/interfaces'
+import { JsonViewOptions, Json, ObjectStructure, JsonPrimitive, JsonArray } from '../../type/interfaces'
 import { defaultJsonViewOptions } from '../../constants'
-import { isArray, isPlainObject, isObject, last } from '../../utils/determineTypes'
+import { isArray, isObject, map } from '../../utils/determineTypes'
 
 @Component({
   name: 'TreeView',
@@ -36,7 +34,7 @@ export default class TreeView extends Vue {
   @Prop({ default: () => defaultJsonViewOptions })
   options!: JsonViewOptions
 
-  handleJsonPrimitive(valueToTransform: any, keyForValue: number | string): ObjectStructure {
+  handleJsonPrimitive(valueToTransform: JsonPrimitive, keyForValue?: number | string): ObjectStructure {
     return {
       key: keyForValue,
       type: 'value',
@@ -47,7 +45,7 @@ export default class TreeView extends Vue {
   /**
    * Recursively calls `generateChildrenFromCollection` until the value is primitive
    */
-  handleJsonArray(arrayToTransform: any[], keyForArray: number): ObjectStructure {
+  handleJsonArray(arrayToTransform: Json, keyForArray: number): ObjectStructure {
     return {
       key: keyForArray,
       type: 'array',
@@ -58,7 +56,7 @@ export default class TreeView extends Vue {
   /**
    * Recursively calls `generateChildrenFromCollection` until the value is primitive
    */
-  handleJsonObject(objectToTransform: Json, keyForObject: string, isRootObject = false): ObjectStructure {
+  handleJsonObject(objectToTransform: Json, keyForObject?: string, isRootObject = false): ObjectStructure {
     return {
       key: keyForObject,
       type: 'object',
@@ -67,8 +65,8 @@ export default class TreeView extends Vue {
     }
   }
 
-  generateChildrenFromCollection(providedJson: any[] | Json) {
-    return map(providedJson, (value: Json, keyOrIndex: number | string) => {
+  generateChildrenFromCollection(providedJson: Json): ObjectStructure[] {
+    return map(providedJson as JsonArray, (value: Json, keyOrIndex: number | string) => {
       // recursively calls until it's a primitive
       if (isObject(value)) {
         return this.handleJsonObject(value, keyOrIndex.toString())
@@ -81,29 +79,14 @@ export default class TreeView extends Vue {
     })
   }
 
-  onChangeData(path: any[], value: any): void {
-    const lastKey = last(path)
-    const newPath = dropRight(drop(path)) as any[]
-
-    let targetObject = this.data
-    newPath.forEach(key => {
-      targetObject = targetObject[key]
-    })
-
-    if (targetObject[lastKey] !== value) {
-      targetObject[lastKey] = value
-      this.$emit('change-data', targetObject)
-    }
-  }
-
   // Computed
   get parsedData() {
     // the provided value is not a complex structure, so handle primitive
     if (!isObject(this.data) && !isArray(this.data)) {
-      return this.handleJsonPrimitive(this.data, this.options.rootObjectKey)
+      return this.handleJsonPrimitive(this.data as JsonPrimitive, this.options.rootObjectKey)
     }
 
-    return this.handleJsonObject(this.data, this?.options.rootObjectKey, true)
+    return this.handleJsonObject(this.data, this.options?.rootObjectKey, true)
   }
 }
 </script>

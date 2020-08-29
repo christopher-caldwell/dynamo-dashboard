@@ -1,15 +1,7 @@
 -<template>
   <div>
     <span class="tree-view-item-key">{{ keyString }}</span>
-    <input
-      v-if="modifiable"
-      class="tree-view-item-value"
-      :class="getValueType(data)"
-      v-model="valueString"
-      @keyup.enter="onUpdateData"
-      @blur="onUpdateData"
-    />
-    <span v-else class="tree-view-item-value" :class="getValueType(data)"> {{ valueFormed }} </span>
+    <span class="tree-view-item-value" :class="getValueType(data)"> {{ valueFormed }} </span>
     <span v-show="error">{{ error }}</span>
   </div>
 </template>
@@ -32,9 +24,6 @@ export default class TreeViewItem extends Vue {
   exampleProperty!: string
 
   @Prop({ default: false })
-  modifiable!: boolean
-
-  @Prop({ default: false })
   keyString!: string
 
   @Prop({ default: false })
@@ -47,23 +36,8 @@ export default class TreeViewItem extends Vue {
     return this.getValue(this.data)
   }
 
-  @Watch('valueFormed')
-  handleValueFormedChanged(val: any) {
-    this.$set(this, 'valueString', isString(val) ? val.replace(/^["]+|["]+$/g, '') : val)
-  }
-
   mounted() {
     console.log('data', this.data)
-  }
-
-  onUpdateData() {
-    try {
-      const v = this.typedValue(this.valueString)
-      this.error = false
-      this.$emit('change-data', [], v)
-    } catch (err) {
-      this.error = err
-    }
   }
 
   typedValue(value: any) {

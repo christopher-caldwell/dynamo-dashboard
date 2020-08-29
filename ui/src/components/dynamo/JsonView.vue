@@ -1,5 +1,5 @@
 <template lang="pug">
-  JsonTreeView(:data='mockData')  
+  JsonTreeView(:data='data')  
 </template>
 
 <script lang="ts">
