@@ -1,52 +1,31 @@
 <template>
   <div class="tree-view-item">
-    <div v-if="isObject(data)" class="tree-view-item-leaf">
-      <div class="tree-view-item-node" @click.stop="toggleOpen()">
+    <div class="tree-view-item-leaf">
+      <div
+        class="tree-view-item-node"
+        @click.stop="toggleOpen()"
+        v-if="isArray(data) | isObject(data)"
+      >
         <span
           :class="{ opened: isOpen }"
           class="tree-view-item-key tree-view-item-key-with-chevron"
-        >
-          {{
-          getKey(data)
-          }}
-        </span>
-        <span class="tree-view-item-hint">{{ propertyDisplayText }}</span>
+        >{{ getKey(data) }}</span>
+        <span v-if="isObject(data)" class="tree-view-item-hint">{{ propertyDisplayText }}</span>
+        <span
+          v-if="isArray(data)"
+          class="tree-view-item-hint"
+        >{{ data.children.length }} {{ itemDisplayText }}</span>
       </div>
       <div v-if="!limitRenderDepth || isOpen">
         <tree-view-item
           :key="getKey(child)"
-          :max-depth="maxDepth"
-          :current-depth="currentDepth + 1"
+          :maxDepth="maxDepth"
+          :currentDepth="currentDepth + 1"
           v-show="isOpen"
           v-for="child in data.children"
           :data="child"
           :showLinkAsClickable="showLinkAsClickable"
-          :limit-render-depth="limitRenderDepth"
-        />
-      </div>
-    </div>
-    <div v-if="isArray(data)" class="tree-view-item-leaf">
-      <div class="tree-view-item-node" @click.stop="toggleOpen()">
-        <span
-          :class="{ opened: isOpen }"
-          class="tree-view-item-key tree-view-item-key-with-chevron"
-        >
-          {{
-          getKey(data)
-          }}
-        </span>
-        <span class="tree-view-item-hint">{{ data.children.length }} {{ itemDisplayText }}</span>
-      </div>
-      <div v-if="!limitRenderDepth || isOpen">
-        <tree-view-item
-          :key="getKey(child)"
-          :max-depth="maxDepth"
-          :current-depth="currentDepth + 1"
-          v-show="isOpen"
-          v-for="child in data.children"
-          :data="child"
-          :showLinkAsClickable="showLinkAsClickable"
-          :limit-render-depth="limitRenderDepth"
+          :limitRenderDepth="limitRenderDepth"
         />
       </div>
     </div>
@@ -116,7 +95,10 @@ export default class TreeViewItem extends Vue {
     return value.children ? true : false
   }
 
-  getKey(value: { key: number | unknown }): string {
+  /**
+   * Selectively adds double quotes if the key is not a number
+   */
+  getKey(value: ObjectStructure): string {
     return isNumber(value.key) ? `${value.key}:` : `"${value.key}":`
   }
 
