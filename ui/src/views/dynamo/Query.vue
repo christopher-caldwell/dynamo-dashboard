@@ -77,8 +77,8 @@ import { Json } from '../../type/interfaces'
   },
 })
 export default class DynamoOperation extends Vue {
-  partitionKeyValue = '#MUSIC_TRACKER_TABLE_station_3322404_weekStartDate_2020-03-12'
-  rangeKeyValue = '1010170337'
+  partitionKeyValue = ''
+  rangeKeyValue = ''
   inputErrorMessages = []
   isLoading = false
   jsonOutput: Json = {}

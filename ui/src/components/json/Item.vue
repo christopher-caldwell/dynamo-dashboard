@@ -123,51 +123,43 @@ export default class TreeViewItem extends Vue {
 }
 </script>
 
-<style>
-.tree-view-item {
-  font-family: monaco, monospace;
-  font-size: 16px;
-  margin-left: 18px;
-}
+<style scoped lang="sass">
+.tree-view-item
+  font-family: monaco, monospace
+  font-size: 16px
+  margin-left: 25px
 
-.tree-view-item-node {
-  cursor: pointer;
-  position: relative;
-  white-space: nowrap;
-}
+.tree-view-item-node
+  cursor: pointer
+  position: relative
+  white-space: nowrap
 
-.tree-view-item-leaf {
-  white-space: nowrap;
-}
+.tree-view-item-leaf
+  white-space: nowrap
 
-.tree-view-item-key {
-  font-weight: bold;
-}
+.tree-view-item-key
+  font-weight: bold
 
-.tree-view-item-key-with-chevron {
-  padding-left: 14px;
-}
+.tree-view-item-key-with-chevron
+  padding-left: 14px
 
-.tree-view-item-key-with-chevron.opened::before {
-  top: 4px;
-  transform: rotate(90deg);
-  -webkit-transform: rotate(90deg);
-}
+.tree-view-item-key-with-chevron.opened::before
+  top: 4px
+  transform: rotate(90deg)
+  -webkit-transform: rotate(90deg)
 
-.tree-view-item-key-with-chevron::before {
-  color: #444;
-  content: '\25b6';
-  font-size: 10px;
-  left: 1px;
-  position: absolute;
-  top: 3px;
-  transition: -webkit-transform 0.1s ease;
-  transition: transform 0.1s ease;
-  transition: transform 0.1s ease, -webkit-transform 0.1s ease;
-  -webkit-transition: -webkit-transform 0.1s ease;
-}
+.tree-view-item-key-with-chevron::before
+  color: #444
+  content: '\25b6'
+  font-size: 10px
+  left: 1px
+  position: absolute
+  top: 3px
+  transition: -webkit-transform 0.1s ease
+  transition: transform 0.1s ease
+  transition: transform 0.1s ease, -webkit-transform 0.1s ease
+  -webkit-transition: -webkit-transform 0.1s ease
 
-.tree-view-item-hint {
-  color: #ccc;
-}
+.tree-view-item-hint
+  color: #ccc
 </style>
