@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Prop } from 'vue-property-decorator'
 
 import { Json, TreeViewDataType } from '../../type/interfaces'
 import { isBoolean, isString, isNumber, isNull } from '../../utils/determineTypes'
@@ -32,11 +32,11 @@ export default class TreeViewValue extends Vue {
   valueString = this.data && this.data.toString()
   error = false
 
-  get valueFormed() {
+  get valueFormed(): number | string | null | unknown {
     return this.getValue(this.data)
   }
 
-  typedValue(value: any) {
+  typedValue(value: number | string | null | unknown): number | string | null | unknown {
     if (value === '') throw new Error('Value is empty string')
 
     switch (this.data) {
