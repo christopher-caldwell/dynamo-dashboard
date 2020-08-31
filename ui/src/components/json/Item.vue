@@ -1,23 +1,15 @@
 <template>
   <div class="tree-view-item">
     <div class="tree-view-item-leaf">
-      <div
-        class="tree-view-item-node"
-        @click.stop="toggleOpen()"
-        v-if="isArray(data) | isObject(data)"
-      >
-        <span
-          :class="{ opened: isOpen }"
-          class="tree-view-item-key tree-view-item-key-with-chevron"
-        >{{ getKey(data) }}</span>
-        <span v-if="isObject(data)" class="tree-view-item-hint">{{ propertyDisplayText }}</span>
-        <span
-          v-if="isArray(data)"
-          class="tree-view-item-hint"
-        >{{ data.children.length }} {{ itemDisplayText }}</span>
+      <div class="tree-view-item-node" @click.stop="toggleOpen()" v-if="!isJsonPrimitive(data)">
+        <span :class="{ opened: isOpen }" class="tree-view-item-key tree-view-item-key-with-chevron">{{
+          getKey(data)
+        }}</span>
+        <span v-if="isPlainObject(data) && !isArray(data)" class="tree-view-item-hint">{{ propertyDisplayText }}</span>
+        <span v-if="isArray(data)" class="tree-view-item-hint">[...]</span>
       </div>
       <div v-if="!limitRenderDepth || isOpen">
-        <tree-view-item
+        <TreeViewItem
           :key="getKey(child)"
           :maxDepth="maxDepth"
           :currentDepth="currentDepth + 1"
@@ -29,7 +21,7 @@
         />
       </div>
     </div>
-    <tree-view-item-value
+    <TreeViewValue
       v-if="isJsonPrimitive(data)"
       class="tree-view-item-leaf"
       :key-string="getKey(data)"
@@ -43,7 +35,7 @@
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import TreeViewValue from './Value.vue'
-import { isNumber } from '../../utils/determineTypes'
+import { isNumber, isPlainObject } from '../../utils/determineTypes'
 import { ObjectStructure } from '../../type/interfaces'
 import { defaultJsonViewOptions } from '../../constants'
 
@@ -79,7 +71,7 @@ export default class TreeViewItem extends Vue {
 
   // Methods
   isArray(value: ObjectStructure) {
-    return value.children ? true : false
+    return value.type === 'array'
   }
 
   isJsonPrimitive(jsonValue: ObjectStructure): boolean {
@@ -91,8 +83,8 @@ export default class TreeViewItem extends Vue {
     this.isOpen = !this.isOpen
   }
 
-  isObject(value: ObjectStructure) {
-    return value.children ? true : false
+  isPlainObject(value: ObjectStructure) {
+    return isPlainObject(value)
   }
 
   /**
@@ -136,10 +128,6 @@ export default class TreeViewItem extends Vue {
   font-family: monaco, monospace;
   font-size: 16px;
   margin-left: 18px;
-}
-
-.tree-view-item-value-number {
-  color: red;
 }
 
 .tree-view-item-node {

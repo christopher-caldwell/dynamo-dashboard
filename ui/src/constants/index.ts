@@ -8,10 +8,16 @@ export const dynamoOperations = {
 
 export const defaultJsonViewOptions: JsonViewOptions = {
   maxDepth: 4,
-  rootObjectKey: 'root',
+  rootObjectKey: '',
   showLinkAsClickable: false,
   limitRenderDepth: 0,
   isClosedByDefault: true,
+  colors: {
+    number: 'red',
+    string: 'green',
+    boolean: 'purple',
+    null: 'yellow',
+  },
 }
 
 export const mockData = {

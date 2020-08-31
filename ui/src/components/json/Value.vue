@@ -14,9 +14,9 @@ import { Json, TreeViewDataType } from '../../type/interfaces'
 import { isBoolean, isString, isNumber, isNull } from '../../utils/determineTypes'
 
 @Component({
-  name: 'TreeViewItem',
+  name: 'TreeViewValue',
 })
-export default class TreeViewItem extends Vue {
+export default class TreeViewValue extends Vue {
   @Prop({ default: {} })
   data!: Json
 
@@ -34,10 +34,6 @@ export default class TreeViewItem extends Vue {
 
   get valueFormed() {
     return this.getValue(this.data)
-  }
-
-  mounted() {
-    console.log('data', this.data)
   }
 
   typedValue(value: any) {
@@ -75,18 +71,18 @@ export default class TreeViewItem extends Vue {
   // This methods defines which class name is applied to the value
   getValueType(value: number | boolean | null | string | unknown): TreeViewDataType {
     if (isNumber(value)) {
-      return 'number'
+      return 'tree-value-number'
     }
     if (isBoolean(value)) {
-      return 'boolean'
+      return 'tree-value-boolean'
     }
     if (isNull(value)) {
-      return 'null'
+      return 'tree-value-null'
     }
     if (isString(value)) {
-      return 'string'
+      return 'tree-value-string'
     }
-    return 'unknown'
+    return 'tree-value-unknown'
   }
 }
 </script>

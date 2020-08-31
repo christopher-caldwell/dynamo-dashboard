@@ -3,9 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
-import TreeView from 'vue-json-tree-view'
+import VueHead from 'vue-head'
 
-Vue.use(TreeView)
+Vue.use(VueHead)
 
 Vue.config.productionTip = false
 

@@ -11,9 +11,20 @@ export interface JsonViewOptions {
   showLinkAsClickable?: boolean
   limitRenderDepth?: number
   isClosedByDefault?: boolean
+  colors: {
+    number: string
+    string: string
+    boolean: string
+    null: string
+  }
 }
 
-export type TreeViewDataType = 'number' | 'boolean' | 'null' | 'string' | 'unknown'
+export type TreeViewDataType =
+  | 'tree-value-number'
+  | 'tree-value-boolean'
+  | 'tree-value-null'
+  | 'tree-value-string'
+  | 'tree-value-unknown'
 
 export interface ObjectStructure {
   key: string | number | undefined

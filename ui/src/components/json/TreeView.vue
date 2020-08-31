@@ -1,7 +1,6 @@
-<template>
-  <div class="tree-view-wrapper">
-    <tree-view-item
-      class="tree-view-item-root"
+<template lang="pug">
+  div.tree-view-wrapper
+    TreeViewItem.tree-view-item-root(
       :data="parsedData"
       :maxDepth="options.maxDepth"
       :currentDepth="0"
@@ -10,8 +9,7 @@
       :limitRenderDepth="options.limitRenderDepth"
       :isClosedByDefault="options.isClosedByDefault"
       :isRoot="true"
-    />
-  </div>
+    )
 </template>
 
 <script lang="ts">
@@ -20,12 +18,39 @@ import { Component, Prop } from 'vue-property-decorator'
 import TreeViewItem from './Item.vue'
 import { JsonViewOptions, Json, ObjectStructure, JsonPrimitive, JsonArray } from '../../type/interfaces'
 import { defaultJsonViewOptions } from '../../constants'
-import { isArray, isObject, map } from '../../utils/determineTypes'
+import { isArray, isObject, map, isPlainObject } from '../../utils/determineTypes'
 
 @Component({
   name: 'TreeView',
   components: {
     TreeViewItem,
+  },
+  head: {
+    style() {
+      // TS doesn't recognize the vue instance here, so casting to the default
+      const {
+        options: { colors },
+      } = (this as unknown) as { options: JsonViewOptions }
+      return [
+        {
+          type: 'text/css',
+          inner: `
+.tree-value-number {
+  color: ${colors.number};
+}
+.tree-value-string {
+  color: ${colors.string};
+}
+.tree-value-boolean {
+  color: ${colors.boolean};
+}
+.tree-value-null {
+  color: ${colors.null};
+}
+`,
+        },
+      ]
+    },
   },
 })
 export default class TreeView extends Vue {
@@ -73,6 +98,7 @@ export default class TreeView extends Vue {
       }
       // recursively calls until it's a primitive
       if (isArray(value)) {
+        console.log('val is an array')
         return this.handleJsonArray(value, Number(keyOrIndex))
       }
       return this.handleJsonPrimitive(value, keyOrIndex)
@@ -82,27 +108,28 @@ export default class TreeView extends Vue {
   // Computed
   get parsedData() {
     // the provided value is not a complex structure, so handle primitive
-    if (!isObject(this.data) && !isArray(this.data)) {
-      return this.handleJsonPrimitive(this.data as JsonPrimitive, this.options.rootObjectKey)
+    if (isArray(this.data)) {
+      return this.handleJsonArray(this.data, 0)
+    }
+    if (isPlainObject(this.data)) {
+      return this.handleJsonObject(this.data, this.options.rootObjectKey, true)
     }
 
-    return this.handleJsonObject(this.data, this.options?.rootObjectKey, true)
+    return this.handleJsonPrimitive(this.data as JsonPrimitive, this.options.rootObjectKey)
   }
 }
 </script>
 
-<style scoped>
-.tree-view-wrapper {
-  overflow: auto;
-}
+<style lang="sass">
+.tree-view-wrapper
+  overflow: scroll
+  padding-bottom: 10vh
 
 /* Find the first nested node and override the indentation */
-.tree-view-item-root > .tree-view-item-leaf > .tree-view-item {
-  margin-left: 0 !important;
-}
+.tree-view-item-root > .tree-view-item-leaf > .tree-view-item
+  margin-left: 0 !important
 
 /* Root node should not be indented */
-.tree-view-item-root {
-  margin-left: 0 !important;
-}
+.tree-view-item-root
+  margin-left: 0 !important
 </style>
