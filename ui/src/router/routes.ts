@@ -19,18 +19,18 @@ const routes: Route[] = [
     title: 'Query',
     path: '/query',
   },
-  {
-    title: 'Put Item',
-    path: '/put-item',
-  },
-  {
-    divider: true,
-    title: 'Settings',
-  },
-  {
-    title: 'Global',
-    path: '/settings',
-  },
+  // {
+  //   title: 'Put Item',
+  //   path: '/put-item',
+  // },
+  // {
+  //   divider: true,
+  //   title: 'Settings',
+  // },
+  // {
+  //   title: 'Global',
+  //   path: '/settings',
+  // },
 ]
 
 export default routes
