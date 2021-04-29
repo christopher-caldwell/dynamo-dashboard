@@ -40,17 +40,17 @@
                       label='GSI Partition',
                       :disabled='isLoading',
                       :error-messages='inputErrorMessages',
-                      v-model='partitionKeyValue'
+                      v-model='gsiPartitionKeyValue'
                       required
                       hide-details
                     )
                   v-col
                     v-text-field(
                       outlined,
-                      label='Partition Key',
+                      label='GSI Range Key',
                       :disabled='isLoading',
                       :error-messages='inputErrorMessages',
-                      v-model='partitionKeyValue'
+                      v-model='gsiRangeKeyValue'
                       required
                       hide-details
                     )
@@ -82,6 +82,8 @@ export default class DynamoOperation extends Vue {
   inputErrorMessages = []
   isLoading = false
   jsonOutput: Json = {}
+  gsiPartitionKeyValue = ''
+  gsiRangeKeyValue = ''
   async sendRequest() {
     try {
       const { data } = (await client.get('/get-item', {
